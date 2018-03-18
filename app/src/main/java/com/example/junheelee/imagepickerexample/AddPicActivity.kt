@@ -11,22 +11,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.engine.impl.GlideEngine
 import kotlinx.android.synthetic.main.activity_add_pic.*
-import kotlinx.android.synthetic.main.image_holder.*
+import android.support.annotation.NonNull
+import android.widget.Toast
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.firebase.storage.UploadTask
+import com.google.android.gms.tasks.OnSuccessListener
+import java.io.File
+
 
 class AddPicActivity : AppCompatActivity() {
 
     val REQUEST_CODE_CHOOSE = 101
     var itemList: MutableList<Uri> = mutableListOf()
     lateinit var galleryAdapter: GalleryAdapter
+    lateinit var mStorageRef: StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pic)
+
+        mStorageRef = FirebaseStorage.getInstance().reference
+
+        btn_upload.setOnClickListener { uploadFiles() }
 
         add_pic.setOnClickListener {
             val perms = RxPermissions(this)
@@ -52,6 +65,16 @@ class AddPicActivity : AppCompatActivity() {
         }
     }
 
+    fun uploadFiles() {
+        itemList.forEach {
+            val file = it
+            val imgRef = mStorageRef.child(it.path)
+            imgRef.putFile(file)
+                    .addOnSuccessListener { Toast.makeText(AddPicActivity@ this, "성공!", Toast.LENGTH_SHORT).show() }
+                    .addOnFailureListener { Toast.makeText(AddPicActivity@ this, "실패!", Toast.LENGTH_SHORT).show() }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
@@ -68,7 +91,7 @@ class AddPicActivity : AppCompatActivity() {
         )
 
 
-        override fun getItemCount(): Int = itemList?.size ?: 0
+        override fun getItemCount(): Int = itemList.size
 
         override fun onBindViewHolder(holder: ImageHolder, position: Int) = holder.bind(itemList[position])
 
