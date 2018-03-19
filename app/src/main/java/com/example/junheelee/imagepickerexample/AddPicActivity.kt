@@ -24,8 +24,6 @@ import kotlinx.android.synthetic.main.activity_add_pic.*
 
 class AddPicActivity : AppCompatActivity() {
 
-    // test test
-
     val REQUEST_CODE_CHOOSE = 101
     var itemList: MutableList<Uri> = mutableListOf()
     lateinit var galleryAdapter: GalleryAdapter
@@ -34,8 +32,6 @@ class AddPicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pic)
-
-        // test test ㅅㄷㄴ asdfsadfsadfsadfasdf
 
         mStorageRef = FirebaseStorage.getInstance("gs://imagepickerexample.appspot.com/").reference
 
