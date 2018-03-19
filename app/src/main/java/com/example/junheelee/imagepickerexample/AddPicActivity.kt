@@ -29,8 +29,6 @@ import java.io.File
 
 class AddPicActivity : AppCompatActivity() {
 
-    // test comment 
-
     val REQUEST_CODE_CHOOSE = 101
     var itemList: MutableList<Uri> = mutableListOf()
     lateinit var galleryAdapter: GalleryAdapter
