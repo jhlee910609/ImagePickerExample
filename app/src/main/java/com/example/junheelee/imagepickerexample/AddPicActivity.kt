@@ -24,6 +24,8 @@ import kotlinx.android.synthetic.main.activity_add_pic.*
 
 class AddPicActivity : AppCompatActivity() {
 
+    // test test
+
     val REQUEST_CODE_CHOOSE = 101
     var itemList: MutableList<Uri> = mutableListOf()
     lateinit var galleryAdapter: GalleryAdapter
