@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "529850114134-1444ofjmodhhhrpb105vmqchqbp58rgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.junheelee.imagepickerexample",
+            "certificate_hash": "d49af36d0f9b9f4daf242924f0acde588401c0c1"
+          }
+        },
+        {
           "client_id": "529850114134-t3sqsbjf0sa4agumbu2r569uldu48hud.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -19,6 +19,7 @@ import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.engine.impl.GlideEngine
 import kotlinx.android.synthetic.main.activity_add_pic.*
 import android.support.annotation.NonNull
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.storage.UploadTask
@@ -37,7 +38,7 @@ class AddPicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pic)
 
-        mStorageRef = FirebaseStorage.getInstance().reference
+        mStorageRef = FirebaseStorage.getInstance("gs://imagepickerexample.appspot.com/").reference
 
         btn_upload.setOnClickListener { uploadFiles() }
 
@@ -70,7 +71,9 @@ class AddPicActivity : AppCompatActivity() {
             val file = it
             val imgRef = mStorageRef.child(it.path)
             imgRef.putFile(file)
-                    .addOnSuccessListener { Toast.makeText(AddPicActivity@ this, "성공!", Toast.LENGTH_SHORT).show() }
+                    .addOnSuccessListener {
+                        Log.e("AddpicActivity", it.downloadUrl.toString())
+                        Toast.makeText(AddPicActivity@ this, "성공!", Toast.LENGTH_SHORT).show() }
                     .addOnFailureListener { Toast.makeText(AddPicActivity@ this, "실패!", Toast.LENGTH_SHORT).show() }
         }
     }
