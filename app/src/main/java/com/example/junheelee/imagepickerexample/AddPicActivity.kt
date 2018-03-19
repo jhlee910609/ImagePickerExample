@@ -35,6 +35,8 @@ class AddPicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pic)
 
+        // test test 
+
         mStorageRef = FirebaseStorage.getInstance("gs://imagepickerexample.appspot.com/").reference
 
         btn_upload.setOnClickListener { uploadFiles() }
