@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         fab.setOnClickListener { startActivity(Intent(baseContext, AddPicActivity::class.java)) }
-        button2.setOnClickListener{
+        button2.setOnClickListener {
             mAuth.createUserWithEmailAndPassword(edit_id.text.toString(), edit_pw.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
@@ -41,14 +42,19 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     }
+        }
 
-
+        ratingBar.apply {
+            setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+                Toast.makeText(ratingBar.context, "your rating is $rating!", Toast.LENGTH_SHORT).show()
+                ratingBar.rating = rating
+            }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        val currentUser: FirebaseUser ?= mAuth.currentUser
+        val currentUser: FirebaseUser? = mAuth.currentUser
 
     }
 

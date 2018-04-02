@@ -1,15 +1,17 @@
 package com.example.junheelee.imagepickerexample
 
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.view.MotionEventCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -20,9 +22,12 @@ import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.engine.impl.GlideEngine
 import kotlinx.android.synthetic.main.activity_add_pic.*
+import java.util.*
 
 
-class AddPicActivity : AppCompatActivity() {
+class AddPicActivity : AppCompatActivity(), OnDragListener {
+
+    lateinit var itemTouchHelper: ItemTouchHelper
 
     val REQUEST_CODE_CHOOSE = 101
     var itemList: MutableList<Uri> = mutableListOf()
@@ -53,12 +58,24 @@ class AddPicActivity : AppCompatActivity() {
                         }
                     }
         }
-        galleryAdapter = GalleryAdapter(itemList)
+
+
+
+        galleryAdapter = GalleryAdapter(itemList, this)
 
         preview_recycler.apply {
-            layoutManager = GridLayoutManager(baseContext, 3)
+            layoutManager = LinearLayoutManager(baseContext, LinearLayoutManager.HORIZONTAL, false)
             adapter = galleryAdapter
         }
+
+        val simpleCallback = SimpleItemTouchHelperCallback(galleryAdapter)
+        itemTouchHelper = ItemTouchHelper(simpleCallback).apply {
+            attachToRecyclerView(preview_recycler)
+        }
+    }
+
+    override fun onDrag(vh: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(vh)
     }
 
     fun uploadFiles() {
@@ -68,8 +85,9 @@ class AddPicActivity : AppCompatActivity() {
             imgRef.putFile(file)
                     .addOnSuccessListener {
                         Log.e("AddpicActivity", it.downloadUrl.toString())
-                        Toast.makeText(AddPicActivity@ this, "성공!", Toast.LENGTH_SHORT).show() }
-                    .addOnFailureListener { Toast.makeText(AddPicActivity@ this, "실패!", Toast.LENGTH_SHORT).show() }
+                        Toast.makeText(AddPicActivity@ this, "업로드 성공!", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { Toast.makeText(AddPicActivity@ this, "업로드 실패!", Toast.LENGTH_SHORT).show() }
         }
     }
 
@@ -82,31 +100,101 @@ class AddPicActivity : AppCompatActivity() {
         }
     }
 
-    inner class GalleryAdapter(var itemList: MutableList<Uri>) : RecyclerView.Adapter<GalleryAdapter.ImageHolder>() {
+    inner class GalleryAdapter(var itemList: MutableList<Uri>, var listener: OnDragListener) : RecyclerView.Adapter<GalleryAdapter.ImageHolder>(), ItemTouchHelperAdapter {
+
+        override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+            Collections.swap(itemList, fromPosition, toPosition)
+            notifyItemMoved(fromPosition, toPosition)
+            return true
+        }
+
+        override fun onItemDismiss(position: Int) {
+            itemList.removeAt(position)
+            notifyItemRemoved(position)
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder = ImageHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.image_holder, parent, false)
         )
 
-
         override fun getItemCount(): Int = itemList.size
 
-        override fun onBindViewHolder(holder: ImageHolder, position: Int) = holder.bind(itemList[position])
+        override fun onBindViewHolder(holder: ImageHolder, position: Int) {
+            holder.bind(itemList[position], position, { pos: Int -> removeItem(pos) })
+        }
+
+        private fun removeItem(pos: Int) {
+            itemList.removeAt(pos)
+            notifyItemRemoved(pos)
+            notifyItemRangeChanged(pos, itemList.size - pos)
+            if (itemList.isEmpty()) {
+                Toast.makeText(baseContext, "모두 삭제됨", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
-        inner class ImageHolder(val v: View) : RecyclerView.ViewHolder(v) {
+
+        inner class ImageHolder(val vh: View) : AndroidExtensionsViewHolder(vh), ItemTouchHelperHolder, GestureDetector.OnGestureListener {
+            override fun onShowPress(e: MotionEvent?) {
+            }
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+                return false
+            }
+
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                return false
+            }
+
+            override fun onLongPress(e: MotionEvent?) {
+                if (MotionEventCompat.getActionMasked(e) == MotionEvent.ACTION_DOWN) {
+                    listener.onDrag(this)
+                }
+            }
+
+            override fun onItemSelected() {
+                vh.setBackgroundColor(Color.YELLOW)
+            }
+
+            override fun onItemClear() {
+                vh.setBackgroundColor(0)
+            }
 
             var imageView: ImageView
+            var btnRemove: ImageButton
 
             init {
-                imageView = v.findViewById<ImageView>(R.id.image_view)
+                imageView = vh.findViewById<ImageView>(R.id.image_view)
+                btnRemove = vh.findViewById(R.id.btn_remove)
             }
 
 
-            fun bind(data: Uri) {
-                Glide.with(v.context)
+            fun bind(data: Uri, pos: Int, removeItem: (pos: Int) -> Unit) {
+                Glide.with(vh.context)
                         .load(data)
                         .into(imageView)
+
+                btnRemove.setOnClickListener {
+                    removeItem(pos)
+                    if (pos != 0)
+                        Toast.makeText(vh.context, "삭제된 포지션 : $pos", Toast.LENGTH_SHORT).show()
+                }
+
+
+//                vh.setOnTouchListener { v, event ->
+//                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                        listener.onDrag(this)
+//                    }
+//                    false
+//                }
 
             }
         }

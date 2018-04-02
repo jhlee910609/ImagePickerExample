@@ -8,7 +8,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.junheelee.imagepickerexample"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -22,24 +22,40 @@ android {
     }
 }
 
+
+ext {
+    firebaseVer = '12.0.1'
+    rxJavaVer = '2.1.12'
+    firebaseUiVer = '3.3.0'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:27.0.2'
-    implementation 'com.google.firebase:firebase-auth:11.8.0'
+    implementation "com.google.firebase:firebase-auth:$firebaseVer"
+    compile "com.google.firebase:firebase-database:$firebaseVer"
     compile 'com.zhihu.android:matisse:0.4.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.1@aar'
-    implementation 'io.reactivex.rxjava2:rxjava:2.0.5'
-    compile 'com.google.firebase:firebase-storage:11.8.0'
-//    implementation 'com.github.bumptech.glide:glide:4.6.1'
-//    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVer"
+    compile "com.google.firebase:firebase-storage:$firebaseVer"
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+
+    implementation "com.firebaseui:firebase-ui-database:$firebaseUiVer"
+    implementation "com.firebaseui:firebase-ui-auth:$firebaseUiVer"
 }
+
+androidExtensions {
+
+    // 실험실 기능을 활성화합니다.
+    experimental = true
+}
+
 
 
 apply plugin: 'com.google.gms.google-services'
