@@ -97,7 +97,7 @@ class AddPicActivity : AppCompatActivity(), OnDragListener {
             itemList = Matisse.obtainResult(data)
             galleryAdapter.itemList = Matisse.obtainResult(data)
             galleryAdapter.notifyDataSetChanged()
-            total_count.text = """"
+            total_count.text = """
                 |[ 총 개수 ${itemList.size} 입니다. ]
                 |드래그 하시면 순서를 변경하실 수 있습니다.
             """.trimMargin()
