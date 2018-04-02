@@ -106,6 +106,9 @@ class AddPicActivity : AppCompatActivity(), OnDragListener {
     }
 
     inner class GalleryAdapter(var itemList: MutableList<Uri>, var listener: OnDragListener) : RecyclerView.Adapter<GalleryAdapter.ImageHolder>(), ItemTouchHelperAdapter {
+        override fun resetNumber() {
+            notifyDataSetChanged()
+        }
 
         private lateinit var mCtx: Context
 
@@ -162,6 +165,8 @@ class AddPicActivity : AppCompatActivity(), OnDragListener {
                 Glide.with(vh.context)
                         .load(data)
                         .into(image_view)
+
+                num_tv.text = pos.toString()
             }
 
             override fun onShowPress(e: MotionEvent?) {

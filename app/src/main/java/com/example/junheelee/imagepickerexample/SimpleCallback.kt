@@ -63,12 +63,14 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         // We only want the active item to change
-        if (actionState != ItemTouchHelper.ACTION_STATE_DRAG) {
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
             if (viewHolder is ItemTouchHelperHolder) {
                 // Let the view holder know that this item is being moved or dragged
                 val itemViewHolder = viewHolder as ItemTouchHelperHolder?
                 itemViewHolder!!.onItemSelected()
             }
+        } else {
+            mAdapter.resetNumber()
         }
 
         super.onSelectedChanged(viewHolder, actionState)
