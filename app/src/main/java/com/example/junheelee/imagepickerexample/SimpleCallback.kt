@@ -27,7 +27,7 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
             val swipeFlags = 0
             return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
         } else {
-            val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.UP or ItemTouchHelper.DOWN
             val swipeFlags = 0
             return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
         }
@@ -63,7 +63,7 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         // We only want the active item to change
-        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+        if (actionState != ItemTouchHelper.ACTION_STATE_DRAG) {
             if (viewHolder is ItemTouchHelperHolder) {
                 // Let the view holder know that this item is being moved or dragged
                 val itemViewHolder = viewHolder as ItemTouchHelperHolder?
