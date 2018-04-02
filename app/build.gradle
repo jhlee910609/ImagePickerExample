@@ -27,6 +27,7 @@ ext {
     firebaseVer = '12.0.1'
     rxJavaVer = '2.1.12'
     firebaseUiVer = '3.3.0'
+    ktxVer = '0.2'
 }
 
 dependencies {
@@ -48,6 +49,7 @@ dependencies {
 
     implementation "com.firebaseui:firebase-ui-database:$firebaseUiVer"
     implementation "com.firebaseui:firebase-ui-auth:$firebaseUiVer"
+    implementation "androidx.core:core-ktx:$ktxVer"
 }
 
 androidExtensions {
