@@ -27,7 +27,8 @@ ext {
     firebaseVer = '12.0.1'
     rxJavaVer = '2.1.12'
     firebaseUiVer = '3.3.0'
-    ktxVer = '0.2'
+    ktxVer = '0.3'
+    anko_version='0.10.4'
 }
 
 dependencies {
@@ -50,6 +51,7 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-database:$firebaseUiVer"
     implementation "com.firebaseui:firebase-ui-auth:$firebaseUiVer"
     implementation "androidx.core:core-ktx:$ktxVer"
+    compile "org.jetbrains.anko:anko-commons:$anko_version"
 }
 
 androidExtensions {
@@ -57,6 +59,7 @@ androidExtensions {
     // 실험실 기능을 활성화합니다.
     experimental = true
 }
+
 
 
 

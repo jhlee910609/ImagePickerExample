@@ -13,6 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.core.widget.toast
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -102,7 +103,16 @@ class AddPicActivity : AppCompatActivity(), OnDragListener {
                 |드래그 하시면 순서를 변경하실 수 있습니다.
             """.trimMargin()
 
+            doExample { println("Hi") }
+
+
         }
+    }
+
+    inline fun doExample(func: () -> Unit) {
+        println("The start")
+        func.invoke()
+        println("The end")
     }
 
     inner class GalleryAdapter(var itemList: MutableList<Uri>, var listener: OnDragListener) : RecyclerView.Adapter<GalleryAdapter.ImageHolder>(), ItemTouchHelperAdapter {
@@ -141,9 +151,9 @@ class AddPicActivity : AppCompatActivity(), OnDragListener {
             itemList.removeAt(pos)
             notifyItemRemoved(pos)
             notifyItemRangeChanged(pos, itemList.size - pos)
-            if (itemList.isEmpty()) {
-                Toast.makeText(baseContext, "모두 삭제됨", Toast.LENGTH_SHORT).show()
-            }
+
+            if (itemList.isEmpty())
+                baseContext.toast("모두 삭제됨", Toast.LENGTH_SHORT).show()
         }
 
 

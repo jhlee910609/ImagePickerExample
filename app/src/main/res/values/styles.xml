@@ -21,4 +21,8 @@
 
     </style>
 
+    <style name="ratioImgView">
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
 </resources>
